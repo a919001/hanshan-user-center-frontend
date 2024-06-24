@@ -1,14 +1,10 @@
-import {PageContainer} from '@ant-design/pro-components';
-import '@umijs/max';
-import React from 'react';
-import {EllipsisOutlined, PlusOutlined} from '@ant-design/icons';
 import type {ActionType, ProColumns} from '@ant-design/pro-components';
-import {ProTable, TableDropdown} from '@ant-design/pro-components';
-import {Button, Dropdown, Image, Space, Tag} from 'antd';
-import {useRef} from 'react';
-import request from 'umi-request';
-import {searchUsers} from "@/services/ant-design-pro/api";
-import {record} from "@umijs/utils/compiled/zod";
+import {PageContainer, ProTable, TableDropdown} from '@ant-design/pro-components';
+import '@umijs/max';
+import React, {useRef} from 'react';
+import {PlusOutlined} from '@ant-design/icons';
+import {Button, Image, message, Modal,} from 'antd';
+import {deleteUser, searchUsers} from "@/services/ant-design-pro/api";
 
 export const waitTimePromise = async (time: number = 100) => {
   return new Promise((resolve) => {
@@ -22,6 +18,28 @@ export const waitTime = async (time: number = 100) => {
   await waitTimePromise(time);
 };
 
+// 删除用户
+const handleDelete = async (id) => {
+  // 弹出确认框询问用户是否确认删除
+  Modal.confirm({
+    title: '确认删除',
+    content: '您确定要删除这条记录吗？',
+    async onOk() {
+      // 发起删除请求到后端
+      const res = await deleteUser(id);
+      if (res.data) {
+        message.success('删除成功！');
+      } else {
+        message.error('删除失败，请重试。');
+      }
+    },
+    onCancel() {
+      // 用户取消删除，不做任何操作
+    },
+  });
+};
+
+// @ts-ignore
 const columns: ProColumns<API.CurrentUser>[] = [
   {
     dataIndex: 'id',
@@ -38,7 +56,7 @@ const columns: ProColumns<API.CurrentUser>[] = [
     dataIndex: 'avatar',
     render: (_, record) => (
       <div>
-        <Image src={record.avatar} width={75} />
+        <Image src={record.avatar} width={75}/>
       </div>
     )
   },
@@ -128,7 +146,11 @@ const columns: ProColumns<API.CurrentUser>[] = [
       </a>,
       <TableDropdown
         key="actionGroup"
-        onSelect={() => action?.reload()}
+        onSelect={(key) => {
+          if (key === 'delete') {
+            handleDelete(record.id).then(() => action?.reload())
+          }
+        }}
         menus={[
           {key: 'copy', name: '复制'},
           {key: 'delete', name: '删除'},
@@ -177,6 +199,7 @@ const UserManage: React.FC = () => {
             listsHeight: 400,
           },
         }}
+        // @ts-ignore
         form={{
           // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
           syncToUrl: (values, type) => {

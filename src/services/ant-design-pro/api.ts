@@ -54,6 +54,17 @@ export async function getVerifyCode(
   });
 }
 
+/** 删除普通用户 Post /api/user/delete */
+export async function deleteUser(id: string) {
+  const requestBody = {
+    id,
+  };
+  return request<API.FakeCaptcha>('/api/user/delete', {
+    method: 'POST',
+    data: requestBody,
+  });
+}
+
 /** 查询用户列表 GET /api/user/search */
 export async function searchUsers (options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/api/user/search', {
