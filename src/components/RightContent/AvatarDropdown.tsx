@@ -51,6 +51,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
     const redirect = urlParams.get('redirect');
     // Note: There may be security issues, please note
     if (window.location.pathname !== '/user/login' && !redirect) {
+      // @ts-ignore
       history.replace({
         pathname: '/user/login',
         search: stringify({
@@ -73,7 +74,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
         loginOut();
         return;
       }
-      history.push(`/account/${key}`);
+      history.push(`/user/${key}`);
     },
     [setInitialState],
   );
@@ -101,23 +102,19 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
   }
 
   const menuItems = [
-    ...(menu
-      ? [
-        {
-          key: 'center',
-          icon: <UserOutlined />,
-          label: '个人中心',
-        },
-        {
-          key: 'settings',
-          icon: <SettingOutlined />,
-          label: '个人设置',
-        },
-        {
-          type: 'divider' as const,
-        },
-      ]
-      : []),
+    {
+      key: 'personal-center',
+      icon: <UserOutlined />,
+      label: '个人中心',
+    },
+    // {
+    //   key: 'settings',
+    //   icon: <SettingOutlined />,
+    //   label: '个人设置',
+    // },
+    {
+      type: 'divider' as const,
+    },
     {
       key: 'logout',
       icon: <LogoutOutlined />,
@@ -127,6 +124,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
 
   return (
     <HeaderDropdown
+      // @ts-ignore
       menu={{
         selectedKeys: [],
         onClick: onMenuClick,
@@ -137,8 +135,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       <Space>
         {currentUser?.avatar ? (<Avatar size="large" src={currentUser?.avatar}/>):
           (<Avatar size="large" icon={<UserOutlined/>}/>)}
-
-        <span className="anticon">{currentUser?.nickname}</span>
+        <span>{currentUser?.nickname}</span>
       </Space>
     </HeaderDropdown>
   );
