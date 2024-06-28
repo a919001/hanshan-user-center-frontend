@@ -73,6 +73,18 @@ export async function searchUsers (options?: { [key: string]: any }) {
   });
 }
 
+/** 更新个人信息接口 POST /api/user/update-personal-info */
+export async function updatePersonalInfo(body: API.UpdatePersonalInfoParams, options?: { [key: string]: any }) {
+  return request<API.BaseResponse<any>>('/api/user/update-personal-info', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/api/notices', {

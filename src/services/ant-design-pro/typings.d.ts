@@ -73,6 +73,14 @@ declare namespace API {
     type?: string;
   };
 
+  type UpdatePersonalInfoParams = {
+    nickname?: string;
+    gender?: number;
+    birthday?: Date;
+    region?: string;
+    signature?: string;
+  }
+
   type ErrorResponse = {
     /** 业务约定的错误码 */
     errorCode: string;

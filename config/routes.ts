@@ -9,6 +9,7 @@ export default [
   },
   {path: '/welcome', name: '欢迎', icon: 'smile', component: './Welcome'},
   {path: '/user/personal-center', component: './User/PersonalCenter'},
+  {path: '/user/settings', component: './User/Settings'},
   {
     path: '/admin',
     name: '管理页',
