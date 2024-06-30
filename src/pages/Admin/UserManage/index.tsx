@@ -235,7 +235,6 @@ const UserManage: React.FC = () => {
             onChange: (page) => console.log(page),
           }}
           dateFormatter="string"
-          headerTitle="高级表格"
           toolBarRender={() => [
             <Button
               key="button"

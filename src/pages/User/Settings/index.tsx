@@ -9,7 +9,22 @@ import {
   UserOutlined,
   VideoCameraOutlined
 } from '@ant-design/icons';
-import {Button, Card, Col, Form, GetProp, Layout, Menu, message, Row, theme, Upload, UploadProps} from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  GetProp,
+  Image,
+  Layout,
+  Menu,
+  message,
+  Row,
+  Space,
+  theme,
+  Upload,
+  UploadProps
+} from 'antd';
 import {
   ProForm,
   ProFormCascader,
@@ -60,6 +75,7 @@ const Settings: React.FC = () => {
   // 当前用户信息
   const {initialState, setInitialState} = useModel('@@initialState');
   let currentUserInfo = initialState.currentUser;
+  const [userInfo, setUserInfo] = useState(currentUserInfo);
 
   const {
     token: {colorBgContainer},
@@ -213,11 +229,9 @@ const Settings: React.FC = () => {
         genderValue = '1';
       }
       // 特别处理 region 字段，转换为文本
-      console.log(values.region);
-      console.log(Array.isArray(values.region))
       let regionText;
       if (Array.isArray(values.region)) {
-        regionText = getRegionText(values.region)
+        regionText = getRegionText(values.region, areaOptions)
       } else {
         regionText = values.region;
       }
@@ -230,16 +244,15 @@ const Settings: React.FC = () => {
         message.success("保存成功");
         await fetchUserInfo();
         currentUserInfo = initialState.currentUser;
+        setUserInfo(res.data);
         // 使用新的用户信息重置表单字段的初始值
         formRef.current?.setFieldsValue({
-          nickname: currentUserInfo.nickname,
-          gender: GenderEnum[currentUserInfo.gender],
-          birthday: currentUserInfo.birthday,
-          region: currentUserInfo.region,
-          signature: currentUserInfo.signature,
+          nickname: res.data.nickname,
+          gender: GenderEnum[res.data.gender],
+          birthday: res.data.birthday,
+          region: res.data.region,
+          signature: res.data.signature,
         });
-
-        formRef.current?.resetFields();
       } else {
         message.error(res.message);
       }
@@ -274,7 +287,7 @@ const Settings: React.FC = () => {
                   <ProFormText
                     name="nickname"
                     label="昵称"
-                    initialValue={currentUserInfo.nickname}
+                    initialValue={userInfo.nickname}
                     placeholder="请输入昵称"
                     rules={[
                       {
@@ -290,7 +303,7 @@ const Settings: React.FC = () => {
                   <ProFormSelect
                     name="gender"
                     label="性别"
-                    initialValue={GenderEnum[currentUserInfo.gender]}
+                    initialValue={GenderEnum[userInfo.gender]}
                     placeholder="请选择"
                     options={[
                       {value: '0', label: '男'},
@@ -301,7 +314,7 @@ const Settings: React.FC = () => {
                   <ProFormDatePicker
                     name="birthday"
                     label="生日"
-                    initialValue={currentUserInfo.birthday}
+                    initialValue={userInfo.birthday}
                     format={{
                       format: 'YYYY-MM-DD',
                     }}
@@ -313,7 +326,7 @@ const Settings: React.FC = () => {
                   <ProFormCascader
                     name="region"
                     label="地区"
-                    initialValue={currentUserInfo.region}
+                    initialValue={userInfo.region}
                     fieldProps={{
                       showSearch: true,
                       allowClear: true,
@@ -326,7 +339,7 @@ const Settings: React.FC = () => {
                   <ProFormTextArea
                     name="signature"
                     label="个性签名"
-                    initialValue={currentUserInfo.signature}
+                    initialValue={userInfo.signature}
                     placeholder="编辑个签，展示我的独特态度"
                     maxLength={100}
                   />
@@ -343,9 +356,15 @@ const Settings: React.FC = () => {
                     beforeUpload={beforeUpload}
                     onChange={handleChange}
                   >
-                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{width: '100%'}}/> : uploadButton}
+                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      borderRadius: '50%',
+                    }}/> : uploadButton}
                   </Upload>
                 </ImgCrop>
+                <br/>
                 <p>上传头像</p>
                 <p>格式：支持JPG、PNG、JPEG</p>
                 <p>大小：5M以内</p>
