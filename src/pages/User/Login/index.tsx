@@ -62,6 +62,7 @@ const LoginMessage: React.FC<{
     />
   );
 };
+
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
@@ -141,7 +142,7 @@ const Login: React.FC = () => {
                 label: '账户密码登录',
               },
               {
-                key: 'mobile',
+                key: 'phone',
                 label: '手机号登录',
               },
             ]}
@@ -193,15 +194,15 @@ const Login: React.FC = () => {
             </>
           )}
 
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误"/>}
-          {type === 'mobile' && (
+          {status === 'error' && loginType === 'phone' && <LoginMessage content="验证码错误"/>}
+          {type === 'phone' && (
             <>
               <ProFormText
                 fieldProps={{
                   size: 'large',
                   prefix: <MobileOutlined/>,
                 }}
-                name="mobile"
+                name="phone"
                 placeholder={'请输入手机号'}
                 rules={[
                   {
@@ -229,7 +230,8 @@ const Login: React.FC = () => {
                   }
                   return '获取验证码';
                 }}
-                name="captcha"
+                phoneName="phone"
+                name="verifyCode"
                 rules={[
                   {
                     required: true,
@@ -243,7 +245,7 @@ const Login: React.FC = () => {
                   if (!result) {
                     return;
                   }
-                  message.success('获取验证码成功！验证码为：1234');
+                  message.success(result.data);
                 }}
               />
             </>
@@ -253,9 +255,6 @@ const Login: React.FC = () => {
               marginBottom: 24,
             }}
           >
-            {/*<ProFormCheckbox noStyle name="autoLogin">*/}
-            {/*  自动登录*/}
-            {/*</ProFormCheckbox>*/}
             <Link to="/user/register">立即注册</Link>
             <a
               style={{

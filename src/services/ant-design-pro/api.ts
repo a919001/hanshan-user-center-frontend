@@ -22,7 +22,11 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 密码登录接口 POST /api/user/passwordLogin */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/user/passwordLogin', {
+  let url = '/api/user/passwordLogin';
+  if (body.type === 'phone') {
+    url = '/api/user/phoneLogin'
+  }
+  return request<API.LoginResult>(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

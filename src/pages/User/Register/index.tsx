@@ -9,6 +9,7 @@ import React, {useState} from 'react';
 import {flushSync} from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
 import {Link} from "react-router-dom";
+import {getFakeCaptcha} from "@/services/ant-design-pro/login";
 
 const useStyles = createStyles(({token}) => {
   return {
@@ -250,6 +251,7 @@ const Register: React.FC = () => {
                   }
                   return '获取验证码';
                 }}
+                phoneName="phone"
                 name="verifyCode"
                 rules={[
                   {
@@ -257,23 +259,14 @@ const Register: React.FC = () => {
                     message: '验证码是必填项！',
                   },
                 ]}
-                // onGetCaptcha={async (phone) => {
-                //   const result = await getFakeCaptcha({
-                //     phone,
-                //   });
-                //   if (!result) {
-                //     return;
-                //   }
-                //   message.success('获取验证码成功！验证码为：1234');
-                // }}
                 onGetCaptcha={async (phone) => {
-                  const result = await getVerifyCode({
+                  const result = await getFakeCaptcha({
                     phone,
                   });
                   if (!result) {
                     return;
                   }
-                  message.success('获取验证码成功！验证码为：1234');
+                  message.success('验证码获取成功');
                 }}
               />
             </>

@@ -82,7 +82,11 @@ const Settings: React.FC = () => {
   } = theme.useToken();
 
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>(currentUserInfo.avatar);
+  const [imageUrl, setImageUrl] = useState<string>(() => {
+    if (currentUserInfo !== null) {
+      return currentUserInfo.avatar
+    }
+  });
 
   const handleChange: UploadProps['onChange'] = (info) => {
     if (info.file.status === 'uploading') {
