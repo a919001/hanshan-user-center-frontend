@@ -2,29 +2,14 @@
 
 import React, {useRef, useState} from 'react';
 import {
+  LeftOutlined,
   LoadingOutlined,
   PlusOutlined,
   SaveOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined
+  SolutionOutlined,
+  UserOutlined
 } from '@ant-design/icons';
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  GetProp,
-  Image,
-  Layout,
-  Menu,
-  message,
-  Row,
-  Space,
-  theme,
-  Upload,
-  UploadProps
-} from 'antd';
+import {Button, Card, Col, Form, GetProp, Layout, Menu, message, Row, theme, Upload, UploadProps} from 'antd';
 import {
   ProForm,
   ProFormCascader,
@@ -39,16 +24,20 @@ import ImgCrop from 'antd-img-crop';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {updatePersonalInfo} from "@/services/ant-design-pro/api";
 import {flushSync} from "react-dom";
+import {Link} from "react-router-dom";
 
 const {Header, Content, Sider} = Layout;
 
-const items = [UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].map(
+const items = [SolutionOutlined, UserOutlined].map(
   (icon, index) => ({
     key: String(index + 1),
     icon: React.createElement(icon),
     label: `nav ${index + 1}`,
   }),
 );
+
+items[0].label = '个人资料';
+items[1].label = '账号设置';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -267,121 +256,150 @@ const Settings: React.FC = () => {
 
   };
 
-  return (
+  /**
+   * 菜单管理
+   */
+    // 初始化菜单状态，假设默认选中第一项
+  const [selectedKey, setSelectedKey] = useState('1');
 
+  // 处理菜单点击事件的函数
+  const handleMenuClick = (e) => {
+    // 更新状态为当前点击的菜单项的key
+    setSelectedKey(e.key);
+  };
+
+  // 定义内容数据
+  const getContent = () => {
+    switch (selectedKey) {
+      case '1':
+        return <Card title="个人资料">
+          <Row gutter={16}>
+            <Col span={12}>
+              <ProForm
+                form={form}
+                layout="horizontal"
+                colon={false}
+                labelCol={{span: 4}}
+                wrapperCol={{span: 14}}
+                submitter={false}
+                formRef={formRef}
+              >
+                <ProFormText
+                  name="nickname"
+                  label="昵称"
+                  initialValue={userInfo.nickname}
+                  placeholder="请输入昵称"
+                  rules={[
+                    {
+                      required: true,
+                      message: '请输入昵称',
+                    },
+                    {
+                      max: 20,
+                      message: '昵称长度不能超过20个字符',
+                    },
+                  ]}
+                />
+                <ProFormSelect
+                  name="gender"
+                  label="性别"
+                  initialValue={GenderEnum[userInfo.gender]}
+                  placeholder="请选择"
+                  options={[
+                    {value: '0', label: '男'},
+                    {value: '1', label: '女'},
+                  ]}
+                  rules={[{required: true, message: '请选择性别'}]}
+                />
+                <ProFormDatePicker
+                  name="birthday"
+                  label="生日"
+                  initialValue={userInfo.birthday}
+                  format={{
+                    format: 'YYYY-MM-DD',
+                  }}
+                  fieldProps={{
+                    style: {width: '100%'}, // 设置内部DatePicker的宽度
+                  }}
+                  rules={[{required: true, message: '请选择出生日期'}]}
+                />
+                <ProFormCascader
+                  name="region"
+                  label="地区"
+                  initialValue={userInfo.region}
+                  fieldProps={{
+                    showSearch: true,
+                    allowClear: true,
+                    placeholder: '请选择地区',
+                    changeOnSelect: true,
+                    options: areaOptions
+                  }}
+                  // rules={[{required: true, message: '请选择地区'}]}
+                />
+                <ProFormTextArea
+                  name="signature"
+                  label="个性签名"
+                  initialValue={userInfo.signature}
+                  placeholder="编辑个签，展示我的独特态度"
+                  maxLength={100}
+                />
+              </ProForm>
+            </Col>
+            <Col>
+              <ImgCrop rotationSlider>
+                <Upload
+                  name="avatar"
+                  listType="picture-circle"
+                  className="avatar-uploader"
+                  showUploadList={false}
+                  action="/api/user/upload"
+                  beforeUpload={beforeUpload}
+                  onChange={handleChange}
+                >
+                  {imageUrl ? <img src={imageUrl} alt="avatar" style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '50%',
+                  }}/> : uploadButton}
+                </Upload>
+              </ImgCrop>
+              <br/>
+              <p>上传头像</p>
+              <p>格式：支持JPG、PNG、JPEG</p>
+              <p>大小：5M以内</p>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={26} offset={2}>
+              <Button type="primary" icon={<SaveOutlined/>} onClick={handleSave}>
+                保存修改
+              </Button>
+            </Col>
+          </Row>
+        </Card>;
+      case '2':
+        return <Card title="账号设置" style={{height: 400}}>
+          <Row justify={"center"} align={"middle"}>
+            <h1>敬请期待</h1>
+          </Row>
+        </Card>;
+      default:
+        return 'Please select a navigation item';
+    }
+  };
+
+  return (
     <Layout>
-      <Header style={{padding: 0, background: colorBgContainer}}/>
+      <Header style={{padding: 0, background: colorBgContainer}}>
+        <Link to={"/user/personal-center"} style={{marginLeft: 40}}> <LeftOutlined /> 返回个人主页</Link>
+      </Header>
       <Layout>
         <Sider style={{background: colorBgContainer, height: 600, margin: '24px 0'}}>
-          <Menu mode="inline" defaultSelectedKeys={['4']} items={items}/>
+          <Menu mode="inline" onClick={handleMenuClick} defaultSelectedKeys={['1']} items={items}/>
         </Sider>
         <Content style={{margin: '24px 16px 0'}}>
-          <Card title="个人资料">
-            <Row gutter={16}>
-              <Col span={12}>
-                <ProForm
-                  form={form}
-                  layout="horizontal"
-                  colon={false}
-                  labelCol={{span: 4}}
-                  wrapperCol={{span: 14}}
-                  submitter={false}
-                  formRef={formRef}
-                >
-                  <ProFormText
-                    name="nickname"
-                    label="昵称"
-                    initialValue={userInfo.nickname}
-                    placeholder="请输入昵称"
-                    rules={[
-                      {
-                        required: true,
-                        message: '请输入昵称',
-                      },
-                      {
-                        max: 20,
-                        message: '昵称长度不能超过20个字符',
-                      },
-                    ]}
-                  />
-                  <ProFormSelect
-                    name="gender"
-                    label="性别"
-                    initialValue={GenderEnum[userInfo.gender]}
-                    placeholder="请选择"
-                    options={[
-                      {value: '0', label: '男'},
-                      {value: '1', label: '女'},
-                    ]}
-                    rules={[{required: true, message: '请选择性别'}]}
-                  />
-                  <ProFormDatePicker
-                    name="birthday"
-                    label="生日"
-                    initialValue={userInfo.birthday}
-                    format={{
-                      format: 'YYYY-MM-DD',
-                    }}
-                    fieldProps={{
-                      style: {width: '100%'}, // 设置内部DatePicker的宽度
-                    }}
-                    rules={[{required: true, message: '请选择出生日期'}]}
-                  />
-                  <ProFormCascader
-                    name="region"
-                    label="地区"
-                    initialValue={userInfo.region}
-                    fieldProps={{
-                      showSearch: true,
-                      allowClear: true,
-                      placeholder: '请选择地区',
-                      changeOnSelect: true,
-                      options: areaOptions
-                    }}
-                    // rules={[{required: true, message: '请选择地区'}]}
-                  />
-                  <ProFormTextArea
-                    name="signature"
-                    label="个性签名"
-                    initialValue={userInfo.signature}
-                    placeholder="编辑个签，展示我的独特态度"
-                    maxLength={100}
-                  />
-                </ProForm>
-              </Col>
-              <Col>
-                <ImgCrop rotationSlider>
-                  <Upload
-                    name="avatar"
-                    listType="picture-circle"
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    action="/api/user/upload"
-                    beforeUpload={beforeUpload}
-                    onChange={handleChange}
-                  >
-                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      borderRadius: '50%',
-                    }}/> : uploadButton}
-                  </Upload>
-                </ImgCrop>
-                <br/>
-                <p>上传头像</p>
-                <p>格式：支持JPG、PNG、JPEG</p>
-                <p>大小：5M以内</p>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={26} offset={2}>
-                <Button type="primary" icon={<SaveOutlined/>} onClick={handleSave}>
-                  保存修改
-                </Button>
-              </Col>
-            </Row>
-          </Card>
+          {getContent()}
         </Content>
       </Layout>
     </Layout>

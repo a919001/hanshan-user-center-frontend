@@ -28,20 +28,20 @@ const PersonalCenter: React.FC = () => {
               </Col>
               <Col span={32}>
                 {/* 用户统计数据展示 */}
-                <Space direction="vertical" size="middle" style={{width: '100%'}}>
-                  <Space>
-                    <Text strong>关注</Text>
-                    <Text type="secondary">1234</Text>
-                  </Space>
-                  <Space>
-                    <Text strong>粉丝</Text>
-                    <Text type="secondary">5678</Text>
-                  </Space>
-                  <Space>
-                    <Text strong>获赞</Text>
-                    <Text type="secondary">91011</Text>
-                  </Space>
-                </Space>
+                {/*<Space direction="vertical" size="middle" style={{width: '100%'}}>*/}
+                {/*  <Space>*/}
+                {/*    <Text strong>关注</Text>*/}
+                {/*    <Text type="secondary">0</Text>*/}
+                {/*  </Space>*/}
+                {/*  <Space>*/}
+                {/*    <Text strong>粉丝</Text>*/}
+                {/*    <Text type="secondary">0</Text>*/}
+                {/*  </Space>*/}
+                {/*  <Space>*/}
+                {/*    <Text strong>获赞</Text>*/}
+                {/*    <Text type="secondary">0</Text>*/}
+                {/*  </Space>*/}
+                {/*</Space>*/}
               </Col>
             </Row>
             <Row justify={"end"}>

@@ -2,8 +2,7 @@ import type {ActionType, ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProTable, TableDropdown} from '@ant-design/pro-components';
 import '@umijs/max';
 import React, {useRef, useState} from 'react';
-import {PlusOutlined} from '@ant-design/icons';
-import {Button, Image, message, Modal} from 'antd';
+import {Image, message, Modal} from 'antd';
 import {deleteUser, searchUsers} from "@/services/ant-design-pro/api";
 import UserInfoModel from "@/components/CustomComponents/UserInfoModel";
 
@@ -155,14 +154,6 @@ const UserManage: React.FC = () => {
       valueType: 'option',
       key: 'option',
       render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
         <a href="#" onClick={() => handleView(record)} key="view">查看</a>,
         <TableDropdown
           key="actionGroup"
@@ -172,7 +163,6 @@ const UserManage: React.FC = () => {
             }
           }}
           menus={[
-            {key: 'copy', name: '复制'},
             {key: 'delete', name: '删除'},
           ]}
         />,
@@ -185,6 +175,7 @@ const UserManage: React.FC = () => {
       <PageContainer content={' 这个页面只有 admin 权限才能查看'}>
         <ProTable<API.CurrentUser>
           columns={columns}
+          search={false}
           actionRef={actionRef}
           cardBordered
           request={async (params, sort, filter) => {
@@ -209,9 +200,9 @@ const UserManage: React.FC = () => {
             },
           }}
           rowKey="id"
-          search={{
-            labelWidth: 'auto',
-          }}
+          // search={{
+          //   labelWidth: 'auto',
+          // }}
           options={{
             setting: {
               listsHeight: 400,
@@ -235,18 +226,6 @@ const UserManage: React.FC = () => {
             onChange: (page) => console.log(page),
           }}
           dateFormatter="string"
-          toolBarRender={() => [
-            <Button
-              key="button"
-              icon={<PlusOutlined/>}
-              onClick={() => {
-                actionRef.current?.reload();
-              }}
-              type="primary"
-            >
-              新建
-            </Button>,
-          ]}
         />
       </PageContainer>
       <UserInfoModel
