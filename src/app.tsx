@@ -1,10 +1,9 @@
 import {AvatarDropdown, AvatarName, Footer, Question} from '@/components';
 import {currentUser as queryCurrentUser} from '@/services/ant-design-pro/api';
-import {LinkOutlined} from '@ant-design/icons';
 import type {Settings as LayoutSettings} from '@ant-design/pro-components';
 import {SettingDrawer} from '@ant-design/pro-components';
 import type {RunTimeLayoutConfig} from '@umijs/max';
-import {history, Link} from '@umijs/max';
+import {history} from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import {errorConfig} from './requestErrorConfig';
 
@@ -146,6 +145,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request = {
+  prefix: process.env.NODE_ENV === 'production' ? 'http://yushanhan.cn' : undefined,
   timeout: 10000,
   ...errorConfig
 };
