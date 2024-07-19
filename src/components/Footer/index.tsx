@@ -17,6 +17,12 @@ const Footer: React.FC = () => {
           title: <><GithubOutlined /> 寒山 GitHub </>,
           href: 'https://github.com/a919001',
           blankTarget: true,
+        },
+        {
+          key: 'hanshan',
+          title: '苏ICP备2024116155号',
+          href: 'https://beian.miit.gov.cn',
+          blankTarget: true,
         }
       ]}
     />
